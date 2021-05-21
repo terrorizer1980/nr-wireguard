@@ -20,10 +20,10 @@
                 "vt": "str"
             }
         ],
-        "repeat": "",
+        "repeat": "60",
         "crontab": "",
-        "once": false,
-        "onceDelay": 0.1,
+        "once": true,
+        "onceDelay": "1",
         "topic": "",
         "payload": "",
         "payloadType": "date",
@@ -31,26 +31,7 @@
         "y": 240,
         "wires": [
             [
-                "6d1dcad8.012a64"
-            ]
-        ]
-    },
-    {
-        "id": "6d1dcad8.012a64",
-        "type": "function",
-        "z": "2e500814.afac28",
-        "name": "Get WIreguard clients",
-        "func": "var config = global.get(\"config\")\n\nmsg.url = `${config.wireguard.api.url}/status/clients`\nmsg.method = \"GET\"\n\nmsg.payload = {}\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 360,
-        "y": 240,
-        "wires": [
-            [
-                "cdaa07e9.970b28"
+                "72257969.46a438"
             ]
         ]
     },
@@ -58,7 +39,7 @@
         "id": "cdaa07e9.970b28",
         "type": "http request",
         "z": "2e500814.afac28",
-        "name": "Wireguard API",
+        "name": "Wg Web",
         "method": "use",
         "ret": "obj",
         "paytoqs": "ignore",
@@ -67,11 +48,11 @@
         "persist": false,
         "proxy": "",
         "authType": "",
-        "x": 600,
+        "x": 480,
         "y": 240,
         "wires": [
             [
-                "e3333687.262468"
+                "d75f44aa.442928"
             ]
         ]
     },
@@ -87,8 +68,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 940,
-        "y": 300,
+        "x": 570,
+        "y": 360,
         "wires": []
     },
     {
@@ -107,7 +88,7 @@
         ],
         "repeat": "",
         "crontab": "",
-        "once": false,
+        "once": true,
         "onceDelay": 0.1,
         "topic": "",
         "payload": "",
@@ -134,5 +115,104 @@
         "x": 330,
         "y": 60,
         "wires": []
+    },
+    {
+        "id": "72257969.46a438",
+        "type": "function",
+        "z": "2e500814.afac28",
+        "name": "Get OAuth url",
+        "func": "var config = global.get(\"config\")\n\nmsg.url = `${config.wireguard.api.url}/auth/oauth2_url`\nmsg.method = \"GET\"\n\nmsg.payload = {}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 240,
+        "wires": [
+            [
+                "cdaa07e9.970b28"
+            ]
+        ]
+    },
+    {
+        "id": "d75f44aa.442928",
+        "type": "function",
+        "z": "2e500814.afac28",
+        "name": "Get OAuth token",
+        "func": "var config = global.get(\"config\")\nvar response = msg.payload\n\nmsg.url = `${config.wireguard.api.url}/auth/oauth2_exchange`\nmsg.method = \"POST\"\n\nmsg.payload = {\n    clientId: response.clientId,\n    state: response.state\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 240,
+        "wires": [
+            [
+                "12693274.23c8be"
+            ]
+        ]
+    },
+    {
+        "id": "12693274.23c8be",
+        "type": "http request",
+        "z": "2e500814.afac28",
+        "name": "Wg Web",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 860,
+        "y": 240,
+        "wires": [
+            [
+                "3ff3d526.4a1ffa"
+            ]
+        ]
+    },
+    {
+        "id": "3ff3d526.4a1ffa",
+        "type": "function",
+        "z": "2e500814.afac28",
+        "name": "Get WIreguard clients",
+        "func": "var config = global.get(\"config\")\nvar response = msg.payload\n\nmsg.url = `${config.wireguard.api.url}/status/clients`\nmsg.method = \"GET\"\n\nmsg.headers = {\n    \"x-wg-gen-web-auth\": response\n}\n\nmsg.payload = {}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 180,
+        "y": 360,
+        "wires": [
+            [
+                "eaa656d4.2a50e8"
+            ]
+        ]
+    },
+    {
+        "id": "eaa656d4.2a50e8",
+        "type": "http request",
+        "z": "2e500814.afac28",
+        "name": "Wg Web",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 380,
+        "y": 360,
+        "wires": [
+            [
+                "e3333687.262468"
+            ]
+        ]
     }
 ]
