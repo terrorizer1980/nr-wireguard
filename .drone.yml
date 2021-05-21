@@ -10,13 +10,13 @@ steps:
     - name: docker-socket
       path: /var/run/docker.sock
   commands:
-    - s2i build app getais/s2i-nodered-centos7:1.3.4 nr-wireguard:latest
+    - s2i build app getais/s2i-nodered-centos7:1.3.4 ghcr.io/tomasliumparas/nr-wireguard:latest
 
 - name: PUSH
   image: getais/drone-plugin-s2i
   environment:
     DOCKER_USER:
-      from_secret: REGISTRY_USER
+      from_secret: GITHUB_REGISTRY_USER
     DOCKER_TOKEN:
       from_secret: GITHUB_REGISTRY_TOKEN
     DOCKER_REGISTRY:
