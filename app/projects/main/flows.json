@@ -1,1 +1,138 @@
-[]
+[
+    {
+        "id": "2e500814.afac28",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "52af66b9.f34a68",
+        "type": "inject",
+        "z": "2e500814.afac28",
+        "name": ">",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 240,
+        "wires": [
+            [
+                "6d1dcad8.012a64"
+            ]
+        ]
+    },
+    {
+        "id": "6d1dcad8.012a64",
+        "type": "function",
+        "z": "2e500814.afac28",
+        "name": "Get WIreguard clients",
+        "func": "var config = global.get(\"config\")\n\nmsg.url = `${config.wireguard.api.url}/status/clients`\nmsg.method = \"GET\"\n\nmsg.payload = {}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 240,
+        "wires": [
+            [
+                "cdaa07e9.970b28"
+            ]
+        ]
+    },
+    {
+        "id": "cdaa07e9.970b28",
+        "type": "http request",
+        "z": "2e500814.afac28",
+        "name": "Wireguard API",
+        "method": "use",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "x": 600,
+        "y": 240,
+        "wires": [
+            [
+                "e3333687.262468"
+            ]
+        ]
+    },
+    {
+        "id": "e3333687.262468",
+        "type": "debug",
+        "z": "2e500814.afac28",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "5536bd35.91d864",
+        "type": "inject",
+        "z": "2e500814.afac28",
+        "name": ">",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 60,
+        "wires": [
+            [
+                "b6828ea6.e53b8"
+            ]
+        ]
+    },
+    {
+        "id": "b6828ea6.e53b8",
+        "type": "function",
+        "z": "2e500814.afac28",
+        "name": "global.config",
+        "func": "global.set(\"config\",{\n    wireguard: {\n        api: {\n            url: env.get(\"WIREGUARD_API_URL\")\n        }\n    }\n})\n",
+        "outputs": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 330,
+        "y": 60,
+        "wires": []
+    }
+]
