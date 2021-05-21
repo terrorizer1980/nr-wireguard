@@ -18,7 +18,7 @@ steps:
     DOCKER_USER:
       from_secret: REGISTRY_USER
     DOCKER_TOKEN:
-      from_secret: GITHUB_REGISTRY_OKEN
+      from_secret: GITHUB_REGISTRY_TOKEN
     DOCKER_REGISTRY:
       from_secret: REGISTRY_URL
   volumes:
