@@ -1,0 +1,38 @@
+kind: pipeline
+type: docker
+name: build
+
+steps:
+
+- name: BUILD
+  image: getais/drone-plugin-s2i
+  volumes:
+    - name: docker-socket
+      path: /var/run/docker.sock
+  commands:
+    - s2i build app getais/s2i-nodered-centos7:1.3.4 nr-wireguard:latest
+
+- name: PUSH
+  image: getais/drone-plugin-s2i
+  environment:
+    DOCKER_USER:
+      from_secret: REGISTRY_USER
+    DOCKER_TOKEN:
+      from_secret: GITHUB_REGISTRY_OKEN
+    DOCKER_REGISTRY:
+      from_secret: REGISTRY_URL
+  volumes:
+    - name: docker-socket
+      path: /var/run/docker.sock
+  commands:
+    - docker login ghcr.io -u $DOCKER_USER -p $DOCKER_TOKEN
+    - docker push ghcr.io/tomasliumparas/nr-wireguard:latest
+
+volumes:
+  - name: docker-socket
+    host:
+      path: /var/run/docker.sock
+
+trigger:
+  event:
+    - push
